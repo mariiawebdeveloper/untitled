@@ -11,7 +11,7 @@ void displayAllProducts(const Inventory inventory[], int size) {
 
 int Inventory::nextItemNumber = 1;
 
-// Определения методов класса Inventory
+// РћРїСЂРµРґРµР»РµРЅРёСЏ РјРµС‚РѕРґРѕРІ РєР»Р°СЃСЃР° Inventory
 void Inventory::setItemName(std::string name) {
     itemName = std::move(name);
 }
@@ -41,10 +41,10 @@ std::string Inventory::getItemName() const {
 }
 
 void Inventory::displayInfo() const {
-    std::cout << "Номер товару: " << itemNumber << std::endl;
-    std::cout << "Назва товару: " << itemName << std::endl;
-    std::cout << "Ціна товару: " << std::fixed << std::setprecision(2) << itemPrice << std::endl;
-    std::cout << "Кількість: " << quantity << std::endl;
+    std::cout << "РќРѕРјРµСЂ С‚РѕРІР°СЂСѓ: " << itemNumber << std::endl;
+    std::cout << "РќР°Р·РІР° С‚РѕРІР°СЂСѓ: " << itemName << std::endl;
+    std::cout << "Р¦С–РЅР° С‚РѕРІР°СЂСѓ: " << std::fixed << std::setprecision(2) << itemPrice << std::endl;
+    std::cout << "РљС–Р»СЊРєС–СЃС‚СЊ: " << quantity << std::endl;
     std::cout << "=====================" << std::endl;
 }
 
@@ -64,58 +64,58 @@ void addProduct(Inventory &product) {
     float price;
     int qty;
 
-    std::cout << "Введіть дані для нового товару:" << std::endl;
-    std::cout << "Назва товару: ";
+    std::cout << "Р’РІРµРґС–С‚СЊ РґР°РЅС– РґР»СЏ РЅРѕРІРѕРіРѕ С‚РѕРІР°СЂСѓ:" << std::endl;
+    std::cout << "РќР°Р·РІР° С‚РѕРІР°СЂСѓ: ";
 //    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     std::getline(std::cin, name);
     product.setItemName(name);
 
-    std::cout << "Ціна товару: ";
+    std::cout << "Р¦С–РЅР° С‚РѕРІР°СЂСѓ: ";
     std::cin >> price;
     product.setItemPrice(price);
 
-    std::cout << "Кількість: ";
+    std::cout << "РљС–Р»СЊРєС–СЃС‚СЊ: ";
     std::cin >> qty;
     product.setQuantity(qty);
 
-    std::cout << "Товар додано!" << std::endl;
+    std::cout << "РўРѕРІР°СЂ РґРѕРґР°РЅРѕ!" << std::endl;
 }
 
-// Функция проведения инвентаризации и вывода выводов
+// Р¤СѓРЅРєС†РёСЏ РїСЂРѕРІРµРґРµРЅРёСЏ РёРЅРІРµРЅС‚Р°СЂРёР·Р°С†РёРё Рё РІС‹РІРѕРґР° РІС‹РІРѕРґРѕРІ
 void performInventory(const Inventory inventory[], int size) {
     float totalInventoryValue = 0;
     std::vector<std::string> conclusions;
 
-    std::cout << "Інвентаризація:" << std::endl;
+    std::cout << "Р†РЅРІРµРЅС‚Р°СЂРёР·Р°С†С–СЏ:" << std::endl;
     for (int i = 0; i < size; ++i) {
         if (inventory[i].isFilled()) {
             inventory[i].displayInfo();
             totalInventoryValue += inventory[i].calculateTotalCost(inventory[i].getQuantity());
 
-            // Добавление выводов в вектор
-            conclusions.push_back("Товар: " + inventory[i].getItemName() +
-                                  ", Кількість: " + std::to_string(inventory[i].getQuantity()) +
-                                  ", Загальна вартість: $" +
+            // Р”РѕР±Р°РІР»РµРЅРёРµ РІС‹РІРѕРґРѕРІ РІ РІРµРєС‚РѕСЂ
+            conclusions.push_back("РўРѕРІР°СЂ: " + inventory[i].getItemName() +
+                                  ", РљС–Р»СЊРєС–СЃС‚СЊ: " + std::to_string(inventory[i].getQuantity()) +
+                                  ", Р—Р°РіР°Р»СЊРЅР° РІР°СЂС‚С–СЃС‚СЊ: $" +
                                   std::to_string(inventory[i].calculateTotalCost(inventory[i].getQuantity())));
         }
     }
 
-    std::cout << "Сумарна вартість інвентарю: $" << std::fixed << std::setprecision(2) << totalInventoryValue
+    std::cout << "РЎСѓРјР°СЂРЅР° РІР°СЂС‚С–СЃС‚СЊ С–РЅРІРµРЅС‚Р°СЂСЋ: $" << std::fixed << std::setprecision(2) << totalInventoryValue
               << std::endl;
 
-    // Вывод выводов
-    std::cout << "Висновки:" << std::endl;
+    // Р’С‹РІРѕРґ РІС‹РІРѕРґРѕРІ
+    std::cout << "Р’РёСЃРЅРѕРІРєРё:" << std::endl;
     for (const std::string &conclusion: conclusions) {
         std::cout << conclusion << std::endl;
     }
 
-    // Очистка буфера вводу перед зчитуванням символу backToMenu
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    // РћС‡РёСЃС‚РєР° Р±СѓС„РµСЂР° РІРІРѕРґСѓ РїРµСЂРµРґ Р·С‡РёС‚СѓРІР°РЅРЅСЏРј СЃРёРјРІРѕР»Сѓ backToMenu
+//    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
     char backToMenu;
-    std::cout << "Натисніть 'q' для повернення в меню: ";
+    std::cout << "РќР°С‚РёСЃРЅС–С‚СЊ 'q' РґР»СЏ РїРѕРІРµСЂРЅРµРЅРЅСЏ РІ РјРµРЅСЋ: ";
     std::cin >> backToMenu;
     if (backToMenu == 'q' || backToMenu == 'Q') {
-        return; // Повернення без продовження виконання циклу в main
+        return; // РџРѕРІРµСЂРЅРµРЅРЅСЏ Р±РµР· РїСЂРѕРґРѕРІР¶РµРЅРЅСЏ РІРёРєРѕРЅР°РЅРЅСЏ С†РёРєР»Сѓ РІ main
     }
 }

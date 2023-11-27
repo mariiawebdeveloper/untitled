@@ -1,4 +1,5 @@
-#pragma optimize("", on)
+
+#include <string>
 #include "inventory.h"
 
 
@@ -25,7 +26,8 @@ int main() {
             case 1:
                 for (int i = 0; i < inventorySize; ++i) {
                     if (!inventory[i].getQuantity() && inventory[i].getItemName().empty() &&
-                        inventory[i].getItemPrice() == 0.0 && inventory[i].getQuantity() == 0) {
+                        (inventory[i].getItemPrice() == 0.0) && (inventory[i].getQuantity() == 0)
+                        ) {
                         addProduct(inventory[i]);
                         break;
                     }

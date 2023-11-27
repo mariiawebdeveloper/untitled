@@ -7,6 +7,7 @@
 #include <vector>
 #include <windows.h>
 #include <limits>
+#include <string>
 
 class Inventory {
 private:
