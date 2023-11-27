@@ -59,7 +59,7 @@ void Inventory::depreciate(float depreciationPercentage) {
 void Inventory::updateQuantity(int purchasedQuantity) {
     quantity -= purchasedQuantity;
 }
-inline void addProduct(Inventory *product) {
+void addProduct(Inventory &product) {
     std::string name;
     float price;
     int qty;

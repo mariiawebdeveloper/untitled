@@ -45,7 +45,7 @@ public:
 // Declare the function without providing the definition
 void displayAllProducts(const Inventory inventory[], int size);
 
-void addProduct(Inventory *product);
+void addProduct(Inventory &product);
 
 void performInventory(const Inventory inventory[], int size);
 
