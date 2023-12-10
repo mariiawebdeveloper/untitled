@@ -1,9 +1,11 @@
 #include "inventory.h"
 #include <iostream>
 #include <iomanip>
+#include <utility>
 #include <vector>
+#include <fstream>
 
-void displayAllProducts(const Inventory inventory[], int size) {
+[[maybe_unused]] void displayAllProducts(const Inventory inventory[], int size) {
     for (int i = 0; i < size; ++i) {
         inventory[i].displayInfo();
     }
@@ -59,35 +61,47 @@ void Inventory::depreciate(float depreciationPercentage) {
 void Inventory::updateQuantity(int purchasedQuantity) {
     quantity -= purchasedQuantity;
 }
-void addProduct(Inventory &product) {
-    std::string name;
-    float price;
-    int qty;
+
+std::string Inventory::toString() const {
+    return this->itemName + ";"
+           + std::to_string(this->itemPrice) + ";"
+           + std::to_string(this->quantity) + ";";
+}
+
+void addProduct(std::vector<Inventory> &inventory) {
+    Inventory product;
+    std::string input;
 
     std::cout << "Введіть дані для нового товару:" << std::endl;
     std::cout << "Назва товару: ";
-//    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-    std::getline(std::cin, name);
+
+    std::getline(std::cin, input);
+    const std::string name = input;
     product.setItemName(name);
 
     std::cout << "Ціна товару: ";
-    std::cin >> price;
+
+    std::getline(std::cin, input);
+    const float price = std::stof(input);
     product.setItemPrice(price);
 
     std::cout << "Кількість: ";
-    std::cin >> qty;
+
+    std::getline(std::cin, input);
+    const int qty = std::stoi(input);
     product.setQuantity(qty);
 
+    inventory.push_back(product);
     std::cout << "Товар додано!" << std::endl;
 }
 
 // Функция проведения инвентаризации и вывода выводов
-void performInventory(const Inventory inventory[], int size) {
+void performInventory(const std::vector<Inventory> &inventory) {
     float totalInventoryValue = 0;
     std::vector<std::string> conclusions;
 
     std::cout << "Інвентаризація:" << std::endl;
-    for (int i = 0; i < size; ++i) {
+    for (int i = 0; i < inventory.size(); ++i) {
         if (inventory[i].isFilled()) {
             inventory[i].displayInfo();
             totalInventoryValue += inventory[i].calculateTotalCost(inventory[i].getQuantity());
@@ -105,17 +119,49 @@ void performInventory(const Inventory inventory[], int size) {
 
     // Вывод выводов
     std::cout << "Висновки:" << std::endl;
-    for (const std::string &conclusion: conclusions) {
+    for (const auto &conclusion: conclusions) {
         std::cout << conclusion << std::endl;
     }
+}
 
-    // Очистка буфера вводу перед зчитуванням символу backToMenu
-//    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-    char backToMenu;
-    std::cout << "Натисніть 'q' для повернення в меню: ";
-    std::cin >> backToMenu;
-    if (backToMenu == 'q' || backToMenu == 'Q') {
-        return; // Повернення без продовження виконання циклу в main
+std::vector<Inventory> loadInventory() {
+    std::ifstream fin(filename);
+    std::vector<Inventory> inventory;
+    if (!fin.is_open()) {
+        saveInventory(inventory);
+        return inventory;
     }
+    std::string input;
+    std::getline(fin, input, ' ');
+    std::getline(fin, input);
+    int size = std::stoi(input);
+    for (int i = 0; i < size; i++) {
+        Inventory product;
+
+        std::getline(fin, input, ';');
+        std::string name = input;
+        product.setItemName(name);
+
+        std::getline(fin, input, ';');
+        float itemPrice = std::stof(input);
+        product.setItemPrice(itemPrice);
+
+        std::getline(fin, input, ';');
+        int quantity = std::stoi(input);
+        product.setQuantity(quantity);
+
+        inventory.push_back(product);
+        std::getline(fin, input);
+    }
+    return inventory;
+}
+
+void saveInventory(const std::vector<Inventory> &inventory) {
+    std::ofstream fout(filename);
+    std::string line;
+    fout << "inventory: " << inventory.size() << std::endl;
+    for (const auto &i: inventory) {
+        fout << i.toString() << std::endl;
+    }
+    fout.close();
 }

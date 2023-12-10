@@ -1,14 +1,11 @@
-
 #include <string>
 #include "inventory.h"
 
 
-
-
 int main() {
+    SetConsoleCP(CP_UTF8);
     SetConsoleOutputCP(CP_UTF8);
-    const int inventorySize = 5;
-    Inventory inventory[inventorySize];
+    std::vector<Inventory> inventory = loadInventory();
     std::string choice;
 
     do {
@@ -22,16 +19,9 @@ int main() {
         std::getline(std::cin, choice);
 
 
-        switch (atoi(choice.c_str())) {
+        switch (std::stoi(choice)) {
             case 1:
-                for (int i = 0; i < inventorySize; ++i) {
-                    if (!inventory[i].getQuantity() && inventory[i].getItemName().empty() &&
-                        (inventory[i].getItemPrice() == 0.0) && (inventory[i].getQuantity() == 0)
-                        ) {
-                        addProduct(inventory[i]);
-                        break;
-                    }
-                }
+                addProduct(inventory);
                 break;
             case 2: {
                 int itemToPurchase;
@@ -39,7 +29,7 @@ int main() {
                 std::cout << "Введіть номер товару для покупки: ";
                 std::cin >> itemToPurchase;
 
-                if (itemToPurchase >= 1 && itemToPurchase <= inventorySize) {
+                if (itemToPurchase >= 1 && itemToPurchase <= inventory.size()) {
                     std::cout << "Введіть кількість для покупки: ";
                     std::cin >> quantityToPurchase;
 
@@ -64,7 +54,7 @@ int main() {
                 std::cout << "Введіть номер товару для амортизації: ";
                 std::cin >> itemToDepreciate;
 
-                if (itemToDepreciate >= 1 && itemToDepreciate <= inventorySize) {
+                if (itemToDepreciate >= 1 && itemToDepreciate <= inventory.size()) {
                     std::cout << "Введіть відсоток амортизації: ";
                     std::cin >> depreciationPercentage;
 
@@ -75,16 +65,18 @@ int main() {
                 }
                 break;
             }
-            case 4:
-                performInventory(inventory, inventorySize);
-                char backToMenu;
+            case 4: {
+                performInventory(inventory);
+                std::string backToMenu;
                 std::cout << "Натисніть 'q' для повернення в меню: ";
-                std::cin >> backToMenu;
-                if (backToMenu == 'q' || backToMenu == 'Q') {
+                std::getline(std::cin, backToMenu);
+                if (backToMenu[0] == 'q' || backToMenu[0] == 'Q') {
                     continue;
                 }
                 break;
+            }
             case 5:
+                saveInventory(inventory);
                 std::cout << "Дякую за використання програми. До побачення!" << std::endl;
                 break;
             default:
@@ -92,5 +84,6 @@ int main() {
         }
     } while (choice != "5");
 
+    getchar();
     return 0;
 }

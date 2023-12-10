@@ -9,6 +9,8 @@
 #include <limits>
 #include <string>
 
+const std::string filename = "inventory.txt";
+
 class Inventory {
 private:
     static int nextItemNumber;
@@ -26,28 +28,34 @@ public:
 
     void setQuantity(int qty);
 
-    bool isFilled() const;
+    [[nodiscard]] bool isFilled() const;
 
-    int getQuantity() const;
+    [[nodiscard]] int getQuantity() const;
 
-    float getItemPrice() const;
+    [[nodiscard]] float getItemPrice() const;
 
-    std::string getItemName() const;
+    [[nodiscard]] std::string getItemName() const;
 
     void displayInfo() const;
 
-    float calculateTotalCost(int quantity) const;
+    [[nodiscard]] float calculateTotalCost(int quantity) const;
 
     void depreciate(float depreciationPercentage);
 
     void updateQuantity(int purchasedQuantity);
+
+    [[nodiscard]] std::string toString() const;
 };
 
 // Declare the function without providing the definition
-void displayAllProducts(const Inventory inventory[], int size);
+[[maybe_unused]] void displayAllProducts(const Inventory inventory[], int size);
 
-void addProduct(Inventory &product);
+void addProduct(std::vector<Inventory> &inventory);
 
-void performInventory(const Inventory inventory[], int size);
+void performInventory(const std::vector<Inventory> &inventory);
+
+std::vector<Inventory> loadInventory();
+
+void saveInventory(const std::vector<Inventory> &inventory);
 
 #endif // INVENTORY_H
