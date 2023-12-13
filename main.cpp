@@ -17,7 +17,7 @@ int main() {
         std::cout << "5. Вихід" << std::endl;
         std::cout << "Оберіть опцію: ";
         std::getline(std::cin, choice);
-
+        std::string input;
 
         switch (std::stoi(choice)) {
             case 1:
@@ -26,12 +26,15 @@ int main() {
             case 2: {
                 int itemToPurchase;
                 int quantityToPurchase;
+
                 std::cout << "Введіть номер товару для покупки: ";
-                std::cin >> itemToPurchase;
+                std::getline(std::cin, input);
+                itemToPurchase = std::stoi(input);
 
                 if (itemToPurchase >= 1 && itemToPurchase <= inventory.size()) {
                     std::cout << "Введіть кількість для покупки: ";
-                    std::cin >> quantityToPurchase;
+                    std::getline(std::cin, input);
+                    quantityToPurchase = std::stoi(input);
 
                     if (quantityToPurchase > 0 && quantityToPurchase <= inventory[itemToPurchase - 1].getQuantity()) {
                         float totalCost = inventory[itemToPurchase - 1].calculateTotalCost(quantityToPurchase);
@@ -52,11 +55,13 @@ int main() {
                 int itemToDepreciate;
                 float depreciationPercentage;
                 std::cout << "Введіть номер товару для амортизації: ";
-                std::cin >> itemToDepreciate;
+                std::getline(std::cin, input);
+                itemToDepreciate = std::stoi(input);
 
                 if (itemToDepreciate >= 1 && itemToDepreciate <= inventory.size()) {
                     std::cout << "Введіть відсоток амортизації: ";
-                    std::cin >> depreciationPercentage;
+                    std::getline(std::cin, input);
+                    depreciationPercentage = std::stof(input);
 
                     inventory[itemToDepreciate - 1].depreciate(depreciationPercentage);
                     std::cout << "Амортизація успішна!" << std::endl;

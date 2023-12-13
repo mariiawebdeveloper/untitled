@@ -18,6 +18,7 @@ private:
     std::string itemName;
     float itemPrice{};
     int quantity{};
+    std::string itemUnits;
 
 public:
     Inventory() : itemNumber(nextItemNumber++), itemPrice(0.0), quantity(0) {}
@@ -45,6 +46,10 @@ public:
     void updateQuantity(int purchasedQuantity);
 
     [[nodiscard]] std::string toString() const;
+
+    void setUnits(std::string units);
+
+    [[nodiscard]] std::string getUnits() const;
 };
 
 // Declare the function without providing the definition

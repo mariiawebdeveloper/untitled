@@ -26,6 +26,10 @@ void Inventory::setQuantity(int qty) {
     quantity = qty;
 }
 
+void Inventory::setUnits(std::string units){
+    itemUnits = units;
+}
+
 bool Inventory::isFilled() const {
     return (itemNumber != 0 || !itemName.empty() || itemPrice != 0.0 || quantity != 0);
 }
@@ -68,6 +72,10 @@ std::string Inventory::toString() const {
            + std::to_string(this->quantity) + ";";
 }
 
+std::string Inventory::getUnits() const {
+    return this->itemUnits;
+}
+
 void addProduct(std::vector<Inventory> &inventory) {
     Inventory product;
     std::string input;
@@ -91,6 +99,12 @@ void addProduct(std::vector<Inventory> &inventory) {
     const int qty = std::stoi(input);
     product.setQuantity(qty);
 
+    std::cout << "Одиниці вимірювання: ";
+
+    std::getline(std::cin, input);
+    const std::string units = input;
+    product.setUnits(units);
+
     inventory.push_back(product);
     std::cout << "Товар додано!" << std::endl;
 }
@@ -109,6 +123,7 @@ void performInventory(const std::vector<Inventory> &inventory) {
             // Добавление выводов в вектор
             conclusions.push_back("Товар: " + inventory[i].getItemName() +
                                   ", Кількість: " + std::to_string(inventory[i].getQuantity()) +
+                                  (inventory[i].getUnits()) +
                                   ", Загальна вартість: $" +
                                   std::to_string(inventory[i].calculateTotalCost(inventory[i].getQuantity())));
         }
