@@ -1,9 +1,18 @@
 #include "inventory.h"
+#include "validator.h"
 #include <iostream>
 #include <iomanip>
 #include <utility>
 #include <vector>
 #include <fstream>
+
+
+inline std::string trim(std::string& str)
+{
+    str.erase(str.find_last_not_of(' ')+1);         //suffixing spaces
+    str.erase(0, str.find_first_not_of(' '));       //prefixing spaces
+    return str;
+}
 
 [[maybe_unused]] void displayAllProducts(const Inventory inventory[], int size) {
     for (int i = 0; i < size; ++i) {
@@ -26,7 +35,7 @@ void Inventory::setQuantity(int qty) {
     quantity = qty;
 }
 
-void Inventory::setUnits(std::string units){
+void Inventory::setUnits(std::string units) {
     itemUnits = units;
 }
 
@@ -50,7 +59,8 @@ void Inventory::displayInfo() const {
     std::cout << "Номер товару: " << itemNumber << std::endl;
     std::cout << "Назва товару: " << itemName << std::endl;
     std::cout << "Ціна товару: " << std::fixed << std::setprecision(2) << itemPrice << std::endl;
-    std::cout << "Кількість: " << quantity << std::endl;
+    std::cout << "Кількість: " << quantity << itemUnits << std::endl;
+    std::cout << "Дата та час за UTC: " << getDateString();
     std::cout << "=====================" << std::endl;
 }
 
@@ -69,11 +79,24 @@ void Inventory::updateQuantity(int purchasedQuantity) {
 std::string Inventory::toString() const {
     return this->itemName + ";"
            + std::to_string(this->itemPrice) + ";"
-           + std::to_string(this->quantity) + ";";
+           + std::to_string(this->quantity) + ";"
+           + std::to_string(this->date) + ";";
 }
 
 std::string Inventory::getUnits() const {
     return this->itemUnits;
+}
+
+void Inventory::setDate(time_t date) {
+    this->date = date;
+
+}
+
+std::string Inventory::getDateString() const {
+    tm *gmtm = gmtime(&this->date);
+    char *dt = asctime(gmtm);
+    std::string result = dt;
+    return trim(result);
 }
 
 void addProduct(std::vector<Inventory> &inventory) {
@@ -81,29 +104,53 @@ void addProduct(std::vector<Inventory> &inventory) {
     std::string input;
 
     std::cout << "Введіть дані для нового товару:" << std::endl;
-    std::cout << "Назва товару: ";
 
-    std::getline(std::cin, input);
-    const std::string name = input;
-    product.setItemName(name);
+    do {
+        std::cout << "Назва товару: ";
+        std::getline(std::cin, input);
+        if (Validator::isChar(input)) {
+            const std::string &name = input;
+            product.setItemName(name);
+            break;
+        }
+        std::cout << "Некоректний формат введення" << std::endl;
+    } while (true);
 
-    std::cout << "Ціна товару: ";
 
-    std::getline(std::cin, input);
-    const float price = std::stof(input);
-    product.setItemPrice(price);
+    do {
+        std::cout << "Ціна товару: ";
+        std::getline(std::cin, input);
+        if (Validator::isFloat(input)) {
+            const float price = std::stof(input);
+            product.setItemPrice(price);
+            break;
+        }
+        std::cout << "Некоректний формат введення" << std::endl;
+    } while (true);
 
-    std::cout << "Кількість: ";
 
-    std::getline(std::cin, input);
-    const int qty = std::stoi(input);
-    product.setQuantity(qty);
+    do {
+        std::cout << "Кількість: ";
+        std::getline(std::cin, input);
+        if (Validator::isInt(input)) {
+            const int qty = std::stoi(input);
+            product.setQuantity(qty);
+            break;
+        }
+        std::cout << "Некоректний формат введення" << std::endl;
+    } while (true);
 
-    std::cout << "Одиниці вимірювання: ";
 
-    std::getline(std::cin, input);
-    const std::string units = input;
-    product.setUnits(units);
+    do {
+        std::cout << "Одиниці вимірювання: ";
+        std::getline(std::cin, input);
+        if (Validator::isChar(input)) {
+            const std::string &units = input;
+            product.setUnits(units);
+            break;
+        }
+        std::cout << "Некоректний формат введення" << std::endl;
+    } while (true);
 
     inventory.push_back(product);
     std::cout << "Товар додано!" << std::endl;
@@ -125,7 +172,9 @@ void performInventory(const std::vector<Inventory> &inventory) {
                                   ", Кількість: " + std::to_string(inventory[i].getQuantity()) +
                                   (inventory[i].getUnits()) +
                                   ", Загальна вартість: $" +
-                                  std::to_string(inventory[i].calculateTotalCost(inventory[i].getQuantity())));
+                                  std::to_string(inventory[i].calculateTotalCost(inventory[i].getQuantity()))
+                                  + ", Дата завезення: " +
+                                  inventory[i].getDateString());
         }
     }
 
@@ -165,6 +214,10 @@ std::vector<Inventory> loadInventory() {
         int quantity = std::stoi(input);
         product.setQuantity(quantity);
 
+        std::getline(fin, input, ';');
+        time_t date = std::stoi(input);
+        product.setDate(date);
+
         inventory.push_back(product);
         std::getline(fin, input);
     }
@@ -179,4 +232,20 @@ void saveInventory(const std::vector<Inventory> &inventory) {
         fout << i.toString() << std::endl;
     }
     fout.close();
+}
+
+void removeProduct(std::vector<Inventory> &inventory) {
+    int itemToRemove;
+    std::string input;
+
+    std::cout << "Введіть номер товару для видалення: ";
+    std::getline(std::cin, input);
+    itemToRemove = std::stoi(input);
+
+    if (itemToRemove >= 1 && itemToRemove <= inventory.size()) {
+        inventory.erase(inventory.begin() + itemToRemove - 1);
+        std::cout << "Товар видалено!" << std::endl;
+    } else {
+        std::cout << "Неправильний номер товару. Будь ласка, введіть правильний номер товару." << std::endl;
+    }
 }

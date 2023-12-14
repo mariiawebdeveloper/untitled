@@ -9,7 +9,7 @@
 #include <limits>
 #include <string>
 
-const std::string filename = "inventory.txt";
+const std::string filename = "../inventory.txt";
 
 class Inventory {
 private:
@@ -19,9 +19,10 @@ private:
     float itemPrice{};
     int quantity{};
     std::string itemUnits;
+    time_t date;
 
 public:
-    Inventory() : itemNumber(nextItemNumber++), itemPrice(0.0), quantity(0) {}
+    Inventory() : itemNumber(nextItemNumber++), itemPrice(0.0), quantity(0), date(time(nullptr)) {}
 
     void setItemName(std::string name);
 
@@ -50,12 +51,18 @@ public:
     void setUnits(std::string units);
 
     [[nodiscard]] std::string getUnits() const;
+
+    void setDate(time_t i);
+
+    std::string getDateString() const;
 };
 
 // Declare the function without providing the definition
 [[maybe_unused]] void displayAllProducts(const Inventory inventory[], int size);
 
 void addProduct(std::vector<Inventory> &inventory);
+
+void removeProduct(std::vector<Inventory> &inventory);
 
 void performInventory(const std::vector<Inventory> &inventory);
 

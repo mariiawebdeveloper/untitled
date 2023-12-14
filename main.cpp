@@ -14,7 +14,8 @@ int main() {
         std::cout << "2. Обробка покупки" << std::endl;
         std::cout << "3. Амортизація" << std::endl;
         std::cout << "4. Інвентаризація" << std::endl;
-        std::cout << "5. Вихід" << std::endl;
+        std::cout << "5. Списання" << std::endl;
+        std::cout << "6. Вихід" << std::endl;
         std::cout << "Оберіть опцію: ";
         std::getline(std::cin, choice);
         std::string input;
@@ -81,13 +82,17 @@ int main() {
                 break;
             }
             case 5:
+                removeProduct(inventory);
+
+
+            case 6:
                 saveInventory(inventory);
                 std::cout << "Дякую за використання програми. До побачення!" << std::endl;
                 break;
             default:
                 std::cout << "Неправильний вибір. Будь ласка, спробуйте ще раз." << std::endl;
         }
-    } while (choice != "5");
+    } while (choice != "6");
 
     getchar();
     return 0;
