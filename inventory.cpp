@@ -9,8 +9,8 @@
 
 inline std::string trim(std::string& str)
 {
-    str.erase(str.find_last_not_of(' ')+1);         //suffixing spaces
-    str.erase(0, str.find_first_not_of(' '));       //prefixing spaces
+    str.erase(str.find_last_not_of(' ')+1);
+    str.erase(0, str.find_first_not_of(' '));
     return str;
 }
 
@@ -22,7 +22,7 @@ inline std::string trim(std::string& str)
 
 int Inventory::nextItemNumber = 1;
 
-// Определения методов класса Inventory
+
 void Inventory::setItemName(std::string name) {
     itemName = std::move(name);
 }

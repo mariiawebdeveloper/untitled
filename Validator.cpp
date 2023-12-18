@@ -1,5 +1,3 @@
-
-
 #include <string>
 #include <stdexcept>
 #include "Validator.h"
